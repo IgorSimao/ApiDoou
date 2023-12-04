@@ -10,8 +10,8 @@ var campanhaShema = new Schema({
     valor_arrecadado:{type: Number},
     imagem_capa:{type: String, required:true},
     imagens:{type: String},
-    criador:{type: String, required: true}
-
+    criador:{type: String, required: true},
+    disponivel:{type: Boolean}
 });
 
 module.exports = mongoose.model("campanha", campanhaShema);

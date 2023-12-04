@@ -28,7 +28,7 @@ module.exports = {
             return res.status(404).json({error: "Campanha não encontrada!", error});
         })
     },
-    addCampanha: function(req, res, next){
+    addCampanha: async function(req, res, next){
         let nome = req.body.nome;
         let categoria = req.body.categoria;
         let descricao = req.body.descricao;
@@ -36,10 +36,57 @@ module.exports = {
         let valor_arrecadado = req.body.valor_arrecadado;
         let imagem_capa = req.body.imagem_capa;
         let imagens = req.body.imagens;
-        
-    //     valor_arrecadado:{type: Number},
-    // imagem_capa:{type: String, required:true},
-    // imagens:{type: String},
-    // criador:{type: String, required: true}
+        let token = req.body.token
+        let disponivel = true;
+        try {
+            const novaCampanha = {
+                nome,
+                categoria,
+                descricao,
+                meta,
+                valor_arrecadado,
+                imagem_capa,
+                imagens,
+                token,
+                disponivel
+            }
+            await novaCampanha.save();
+            res.status(200).json({msg: "Campanha Adicionado com sucesso!"} );
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: "Erro ao salvar campanha no banco de dados.", error });
+        }
+  
+    },
+    editarCampanha: function (req, res, next) {
+        let id = req.params.id
+        let nome = req.body.nome;
+        let categoria = req.body.categoria;
+        let descricao = req.body.descricao;
+        let meta = req.body.meta;
+        let valor_arrecadado = req.body.valor_arrecadado;
+        let imagem_capa = req.body.imagem_capa;
+        let imagens = req.body.imagens;
+        let disponivel = req.body.disponivel;
+
+        const updateCampanha = {
+            nome,
+            categoria,
+            descricao,
+            meta,
+            valor_arrecadado,
+            imagem_capa,
+            imagens,
+            disponivel
+        }
+
+        Campanha.findByIdAndUpdate(id, updateCampanha, {new: true})
+        .then(campanha => {
+            if(!campanha){
+                return res.status(404).json({ error: "O ID informado não existe!"});
+            }
+            res.setHeader("content-type", "application/json");
+            res.status(200).json({"msg": "Campanha Atualizada!"});
+        })
     }
 }

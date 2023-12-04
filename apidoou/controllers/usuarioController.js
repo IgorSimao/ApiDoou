@@ -114,6 +114,9 @@ module.exports = {
                 res.status(404).json({error: "Senha Atual Incorreta"});
             }
         }).catch(error => {res.status(404).json({error: "Usuario não encontrado", error});})
+    },
+    getUsuarioByToken: function(token){
+        return User.find({token: token})
     }
 }
 
