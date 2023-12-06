@@ -119,49 +119,73 @@ module.exports = {
     getUsuarioByToken: function(token){
         return User.find({token: token})
     },
-    usuarioVerificaCredenciais: function(email, senha) {
-        let usuarioEmail = "";
-        let usuarioSenha = "";
-       User.find({email: email}, (err, resultados) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            if (resultados.length > 0) {
-                usuarioEmail = resultados[0].email;
-                usuarioSenha = resultados[0].senha;
-            }
+    // usuarioVerificaCredenciais: function(email, senha) {
+    //     let usuarioEmail = "";
+    //     let usuarioSenha = "";
+    //    User.findOne({email: email}).then(user => {
+    //         usuarioEmail = user.email;
+    //         usuarioSenha = user.senha;
+    //    });
+    //    console.log(usuarioEmail);
+    //     // Se houver resultados
 
-            
-       });
-
-       
-       console.log(usuarioEmail)
-
-
-
-
-        if (!usuario){
-            console.log("entrou no usuario vazio")
-            return false;
-        }
-        console.log(usuarioEmail)
-        if(usuarioEmail == email){
-            console.log("entrou na verificação de email")
-            let senhaAtualDescriptografada = decryptData(usuarioSenha)
-            if (senhaAtualDescriptografada == senha){
-            console.log("entrou na verificação de senha")
+    //     if (!usuario){
+    //         console.log("entrou no usuario vazio")
+    //         return false;
+    //     }
+    //     console.log(usuarioEmail)
+    //     if(usuarioEmail == email){
+    //         console.log("entrou na verificação de email")
+    //         let senhaAtualDescriptografada = decryptData(usuarioSenha)
+    //         if (senhaAtualDescriptografada == senha){
+    //         console.log("entrou na verificação de senha")
                 
-                return true;
-            }else{
-                console.log("entrou na verificação de senha e esta errada")
+    //             return true;
+    //         }else{
+    //             console.log("entrou na verificação de senha e esta errada")
+    //             return false;
+    //         }
+    //     }else{
+    //         console.log("entrou na verificação de email e esta errada")
+    //         return false;
+    //     }
+        
+    // }
+    usuarioVerificaCredenciais: async function(email, senha) {
+        try {
+            // Use async/await para esperar pela resolução da Promise
+            const user = await User.findOne({ email: email });
+            console.log(user)
+            // Se não houver resultados
+            if (!user) {
+                console.log("Usuário não encontrado");
                 return false;
             }
-        }else{
-            console.log("entrou na verificação de email e esta errada")
+    
+            // Verifique as credenciais
+            const usuarioEmail = user.email;
+            const usuarioSenha = user.senha;
+            console.log(usuarioEmail);
+    
+            if (usuarioEmail === email) {
+                console.log("Verificação de email bem-sucedida");
+                const senhaAtualDescriptografada = decryptData(usuarioSenha);
+    
+                if (senhaAtualDescriptografada === senha) {
+                    console.log("Verificação de senha bem-sucedida");
+                    return true;
+                } else {
+                    console.log("Senha incorreta");
+                    return false;
+                }
+            } else {
+                console.log("Email incorreto");
+                return false;
+            }
+        } catch (error) {
+            console.error("Erro ao verificar credenciais:", error);
             return false;
         }
-        
     }
 }
 
