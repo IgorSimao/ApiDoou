@@ -1,6 +1,7 @@
-const User = require("../model/usuario");
+const User = require("../models/usuario");
 require("../config/database")();
 const crypto = require('crypto-js');
+const usuario = require("../models/usuario");
 
 // Chave secreta para criptografia (deve ser mantida em segredo)
 const encryptionKey = '5vG43yqz1xIW';
@@ -117,6 +118,50 @@ module.exports = {
     },
     getUsuarioByToken: function(token){
         return User.find({token: token})
+    },
+    usuarioVerificaCredenciais: function(email, senha) {
+        let usuarioEmail = "";
+        let usuarioSenha = "";
+       User.find({email: email}, (err, resultados) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            if (resultados.length > 0) {
+                usuarioEmail = resultados[0].email;
+                usuarioSenha = resultados[0].senha;
+            }
+
+            
+       });
+
+       
+       console.log(usuarioEmail)
+
+
+
+
+        if (!usuario){
+            console.log("entrou no usuario vazio")
+            return false;
+        }
+        console.log(usuarioEmail)
+        if(usuarioEmail == email){
+            console.log("entrou na verificação de email")
+            let senhaAtualDescriptografada = decryptData(usuarioSenha)
+            if (senhaAtualDescriptografada == senha){
+            console.log("entrou na verificação de senha")
+                
+                return true;
+            }else{
+                console.log("entrou na verificação de senha e esta errada")
+                return false;
+            }
+        }else{
+            console.log("entrou na verificação de email e esta errada")
+            return false;
+        }
+        
     }
 }
 
