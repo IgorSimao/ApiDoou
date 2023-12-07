@@ -36,10 +36,11 @@ module.exports = {
         let valor_arrecadado = req.body.valor_arrecadado;
         let imagem_capa = req.body.imagem_capa;
         let imagens = req.body.imagens;
-        let token = req.body.token
+        let userId = req.body.userId;
         let disponivel = true;
+        
         try {
-            const novaCampanha = {
+            const novaCampanha = new Campanha({
                 nome,
                 categoria,
                 descricao,
@@ -47,9 +48,9 @@ module.exports = {
                 valor_arrecadado,
                 imagem_capa,
                 imagens,
-                token,
+                userId,
                 disponivel
-            }
+            })
             await novaCampanha.save();
             res.status(200).json({msg: "Campanha Adicionado com sucesso!"} );
         } catch (error) {

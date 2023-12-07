@@ -6,6 +6,7 @@ var logger = require('morgan');
 // var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/usuarioRouter');
 var login = require('./routes/login')
+var campanhaRouter = require('./routes/campanhaRouter')
 
 var app = express();
 
@@ -18,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use('/', login);
+app.use('/', campanhaRouter)
 
 app.use((req, res, next) => {
     const erro = new Error("Não encontrado");

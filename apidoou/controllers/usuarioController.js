@@ -1,7 +1,10 @@
 const User = require("../models/usuario");
 require("../config/database")();
 const crypto = require('crypto-js');
-const usuario = require("../models/usuario");
+const jwt = require('jsonwebtoken');
+const authConfig = require('../config/auth.json');
+// const usuario = require("../models/usuario");
+
 
 // Chave secreta para criptografia (deve ser mantida em segredo)
 const encryptionKey = '5vG43yqz1xIW';
@@ -38,6 +41,9 @@ module.exports = {
             return res.status(404).json({error: "Usuário não encontrado!", error});
         })
     },
+    generateToken: function(params = {}){
+        return jwt.sign(params, authConfig.secret, {expiresIn: 86400});
+    },
     addUsuario: async function(req, res, next){
         let nome = req.body.nome;
         let email = req.body.email;
@@ -58,7 +64,7 @@ module.exports = {
                 });
 
                 await novoUsuario.save();
-                res.status(200).json({msg: "Usuário Adicionado com sucesso!"} );
+                res.status(200).json({msg: "Usuário Adicionado com sucesso!"});
             } catch (error) {
                 console.log(error)
                 res.status(500).json({ error: "Erro ao salvar a usuário no banco de dados.", error });
@@ -119,43 +125,11 @@ module.exports = {
     getUsuarioByToken: function(token){
         return User.find({token: token})
     },
-    // usuarioVerificaCredenciais: function(email, senha) {
-    //     let usuarioEmail = "";
-    //     let usuarioSenha = "";
-    //    User.findOne({email: email}).then(user => {
-    //         usuarioEmail = user.email;
-    //         usuarioSenha = user.senha;
-    //    });
-    //    console.log(usuarioEmail);
-    //     // Se houver resultados
-
-    //     if (!usuario){
-    //         console.log("entrou no usuario vazio")
-    //         return false;
-    //     }
-    //     console.log(usuarioEmail)
-    //     if(usuarioEmail == email){
-    //         console.log("entrou na verificação de email")
-    //         let senhaAtualDescriptografada = decryptData(usuarioSenha)
-    //         if (senhaAtualDescriptografada == senha){
-    //         console.log("entrou na verificação de senha")
-                
-    //             return true;
-    //         }else{
-    //             console.log("entrou na verificação de senha e esta errada")
-    //             return false;
-    //         }
-    //     }else{
-    //         console.log("entrou na verificação de email e esta errada")
-    //         return false;
-    //     }
-        
-    // }
+    
     usuarioVerificaCredenciais: async function(email, senha) {
         try {
             // Use async/await para esperar pela resolução da Promise
             const user = await User.findOne({ email: email });
-            console.log(user)
             // Se não houver resultados
             if (!user) {
                 console.log("Usuário não encontrado");
@@ -165,15 +139,16 @@ module.exports = {
             // Verifique as credenciais
             const usuarioEmail = user.email;
             const usuarioSenha = user.senha;
-            console.log(usuarioEmail);
     
-            if (usuarioEmail === email) {
+            if (usuarioEmail == email) {
                 console.log("Verificação de email bem-sucedida");
                 const senhaAtualDescriptografada = decryptData(usuarioSenha);
     
-                if (senhaAtualDescriptografada === senha) {
+                if (senhaAtualDescriptografada == senha) {
                     console.log("Verificação de senha bem-sucedida");
-                    return true;
+                    
+                    token = this.generateToken({id: User.id})
+                    return token;
                 } else {
                     console.log("Senha incorreta");
                     return false;
