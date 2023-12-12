@@ -36,7 +36,7 @@ module.exports = {
         let valor_arrecadado = req.body.valor_arrecadado;
         let imagem_capa = req.body.imagem_capa;
         let imagens = req.body.imagens;
-        let userId = req.body.userId;
+        let userId = req.userId;
         let disponivel = true;
         
         try {

@@ -66,8 +66,11 @@ module.exports = {
                 await novoUsuario.save();
                 res.status(200).json({msg: "Usuário Adicionado com sucesso!"});
             } catch (error) {
+                if(error.code === 11000){
+                   return res.status(400).json({error: "E-mail ou CPF ja cadastrado!"})
+                }
                 console.log(error)
-                res.status(500).json({ error: "Erro ao salvar a usuário no banco de dados.", error });
+                return res.status(500).json({ error: "Erro ao salvar a usuário no banco de dados.", error });
             }
         }
     },
