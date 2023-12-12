@@ -157,7 +157,7 @@ module.exports = {
                 if (senhaAtualDescriptografada == senha) {
                     console.log("Verificação de senha bem-sucedida");
                     
-                    token = this.generateToken({id: User.id})
+                    token = this.generateToken({id: user._id})
                     return token;
                 } else {
                     console.log("Senha incorreta");

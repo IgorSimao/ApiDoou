@@ -36,11 +36,15 @@ module.exports = {
         let valor_arrecadado = req.body.valor_arrecadado;
         let imagem_capa = req.body.imagem_capa;
         let imagens = req.body.imagens;
-        let userId = req.body.userId;
+        let criador = req.userId;
         let disponivel = true;
+
+        
         
         try {
+            console.log("criador", criador)
             const novaCampanha = new Campanha({
+                
                 nome,
                 categoria,
                 descricao,
@@ -48,7 +52,7 @@ module.exports = {
                 valor_arrecadado,
                 imagem_capa,
                 imagens,
-                userId,
+                criador,
                 disponivel
             })
             await novaCampanha.save();
