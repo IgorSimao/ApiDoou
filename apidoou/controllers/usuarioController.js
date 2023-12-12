@@ -3,6 +3,7 @@ require("../config/database")();
 const crypto = require('crypto-js');
 const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth.json');
+const { validationResult, matchedData } = require('express-validator');
 // const usuario = require("../models/usuario");
 
 
@@ -50,6 +51,15 @@ module.exports = {
         let cpf = req.body.cpf;
         let telefone = req.body.telefone;
         let senha = req.body.senha;
+
+        const erros = validationResult(req);
+
+        if (!erros.isEmpty()) {
+            res.json({
+                error: erros.mapped()
+            });
+            return //res.status(500).json({erro: "Erro ao salvar"})
+        }
 
         if(nome != undefined && email != undefined && telefone != undefined && senha != undefined){
             senhaCriptografada = encryptData(senha);
