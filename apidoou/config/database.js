@@ -1,7 +1,7 @@
 let mongoose = require("mongoose")
 
 module.exports = () => {
-    let url = "mongodb://localhost:27017/apiDoou";
+    let url = "mongodb://127.0.0.1:27017/apiDoou";
     let options = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
